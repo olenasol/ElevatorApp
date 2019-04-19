@@ -1,4 +1,4 @@
-package co.lnu.elevatorapp.elevator_simultion.rv;
+package co.lnu.elevatorapp.ui.elevator_simultion.rv;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -6,8 +6,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import co.lnu.elevatorapp.Person;
 import co.lnu.elevatorapp.R;
+import co.lnu.elevatorapp.person.Person;
 
 import java.util.List;
 
@@ -35,7 +35,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
         return listOfPeople.size();
     }
 
-    class PeopleViewHolder extends RecyclerView.ViewHolder{
+    class PeopleViewHolder extends RecyclerView.ViewHolder {
 
         TextView txtPersonIntendedFloor;
 

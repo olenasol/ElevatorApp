@@ -4,7 +4,7 @@
                                              android:layout_width="match_parent"
                                              android:layout_height="match_parent"
                                              xmlns:app="http://schemas.android.com/apk/res-auto"
-                                             tools:context=".elevator_simultion.ElevatorSimulationFragment">
+                                             tools:context=".ui.elevator_simultion.ElevatorSimulationFragment">
 
    <android.support.v7.widget.RecyclerView
            android:id="@+id/elevatorRecyclerView"

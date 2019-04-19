@@ -3,7 +3,7 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
-             tools:context=".number_choose.ChooseNumbersFragment">
+             tools:context=".ui.number_choose.ChooseNumbersFragment">
 
     <LinearLayout
             android:orientation="vertical"

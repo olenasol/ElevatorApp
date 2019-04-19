@@ -1,12 +1,13 @@
-package co.lnu.elevatorapp.elevator_simultion;
+package co.lnu.elevatorapp.ui.elevator_simultion;
 
-import co.lnu.elevatorapp.Elevator;
-import co.lnu.elevatorapp.Floor;
+import co.lnu.elevatorapp.builder.Building;
+import co.lnu.elevatorapp.elevator.Elevator;
+import co.lnu.elevatorapp.floor.Floor;
+import co.lnu.elevatorapp.person.Person;
 
 import java.util.List;
 
 public interface ElevatorSimulationPresenter {
-    List<Floor> getListOfFloors();
 
     void setFloorHeight(int height);
 
@@ -16,5 +17,4 @@ public interface ElevatorSimulationPresenter {
 
     void onViewCreated(int floorNumber, int elevatorNumber);
 
-    List<Elevator> getListOfElevators();
 }

@@ -1,4 +1,4 @@
-package co.lnu.elevatorapp.elevator_simultion.rv;
+package co.lnu.elevatorapp.ui.elevator_simultion.rv;
 
 import android.content.Context;
 import android.os.Bundle;
@@ -6,14 +6,12 @@ import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import co.lnu.elevatorapp.Elevator;
-import co.lnu.elevatorapp.Person;
 import co.lnu.elevatorapp.R;
+import co.lnu.elevatorapp.elevator.Elevator;
+import co.lnu.elevatorapp.person.Person;
 
 import java.util.List;
 

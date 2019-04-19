@@ -1,4 +1,4 @@
-package co.lnu.elevatorapp.number_choose;
+package co.lnu.elevatorapp.ui.number_choose;
 
 
 import android.os.Bundle;
@@ -12,7 +12,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.NumberPicker;
 import co.lnu.elevatorapp.R;
-import co.lnu.elevatorapp.elevator_simultion.ElevatorSimulationFragment;
+import co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationFragment;
 
 /**
  * A simple {@link Fragment} subclass.
