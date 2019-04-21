@@ -10,6 +10,7 @@ public enum MovingStrategyType {
     private static final Random RANDOM = new Random();
 
     public static MovingStrategyType getRandomMovingStrategyType() {
-        return VALUES[RANDOM.nextInt(SIZE)];
+//        return VALUES[RANDOM.nextInt(SIZE)];
+        return WITHOUT_STOP_STRATEGY;
     }
 }

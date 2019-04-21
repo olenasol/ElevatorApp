@@ -6,5 +6,5 @@ public interface ElevatorSimulationInteractor {
 
     Building getBuilding(int floorNumber, int elevatorNumber);
 
-    void getPerson();
+    void startPersonGenerating();
 }

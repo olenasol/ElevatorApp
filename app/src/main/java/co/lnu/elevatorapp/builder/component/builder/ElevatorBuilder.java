@@ -12,7 +12,7 @@ public interface ElevatorBuilder {
 
     ElevatorBuilder setDispatcher(Dispatcher dispatcher);
 
-    ElevatorBuilder setMaxWeight(int maxWeight);
+    ElevatorBuilder setMaxCapacity(int maxCapacity);
 
     ElevatorBuilder setElevatorState(ElevatorState elevatorState);
 
