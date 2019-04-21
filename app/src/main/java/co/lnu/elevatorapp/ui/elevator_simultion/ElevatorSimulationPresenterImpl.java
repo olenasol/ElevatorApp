@@ -1,10 +1,8 @@
 package co.lnu.elevatorapp.ui.elevator_simultion;
 
 import android.os.Handler;
-import android.os.Looper;
 import android.os.Message;
 import co.lnu.elevatorapp.builder.Building;
-import co.lnu.elevatorapp.person.Person;
 
 import static co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationFragment.UPDATE_ELEVATOR;
 import static co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationFragment.UPDATE_FLOOR;
@@ -51,12 +49,18 @@ public class ElevatorSimulationPresenterImpl implements ElevatorSimulationPresen
 
     @Override
     public void notifyFloor(int floorId) {
-        handler.sendEmptyMessage(UPDATE_FLOOR);
+        Message message = new Message();
+        message.what = UPDATE_FLOOR;
+//        message.obj = floorId;
+        handler.sendMessage(message);
     }
 
     @Override
     public void notifyElevator(int elevatorId) {
-        handler.sendEmptyMessage(UPDATE_ELEVATOR);
+        Message message = new Message();
+        message.what = UPDATE_ELEVATOR;
+//        message.obj = elevatorId;
+        handler.sendMessage(message);
     }
 
     @Override

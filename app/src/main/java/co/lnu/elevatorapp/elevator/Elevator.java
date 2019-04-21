@@ -90,20 +90,12 @@ public class Elevator {
         return orders;
     }
 
-    public final void closeDoor() {
-        dispatcher.closeDoor(elevatorId);
-    }
-
-    public final void openDoor() {
-        dispatcher.openDoor(elevatorId);
-    }
-
     public void move() {
         movingStrategy.move(this, dispatcher);
     }
 
-    public void addOrder(int floorId) {
-        movingStrategy.addOrder(floorId, this);
+    public boolean receiveOrder(int floorId) {
+        return movingStrategy.receiveOrder(floorId, this);
     }
 
     public void addIntendedFloor(int floorId){

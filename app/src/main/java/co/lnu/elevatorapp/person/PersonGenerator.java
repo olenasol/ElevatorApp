@@ -15,7 +15,7 @@ public class PersonGenerator {
     private Dispatcher dispatcher;
     private static final double MAX_PERSON_WEIGHT = 100;
     private static final double MIN_PERSON_WEIGHT = 15;
-    private static final int TIMEOUT_DELAY = 6;
+    private static final int TIMEOUT_DELAY = 3;
     private int count = 0;
 
     private int buildingHeight;
@@ -33,10 +33,10 @@ public class PersonGenerator {
     public void generatePerson() {
 //        if(count <= 0) {
             count++;
-            int floorNumber = ThreadLocalRandom.current().nextInt(buildingHeight);
+            int floorNumber = ThreadLocalRandom.current().nextInt(buildingHeight - 1);
             int floorNumberToGo;
             do {
-                floorNumberToGo = ThreadLocalRandom.current().nextInt(buildingHeight);
+                floorNumberToGo = ThreadLocalRandom.current().nextInt(buildingHeight - 1);
             } while (floorNumber == floorNumberToGo);
 
             double weight = ThreadLocalRandom.current().nextDouble(MIN_PERSON_WEIGHT, MAX_PERSON_WEIGHT);

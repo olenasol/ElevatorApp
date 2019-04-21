@@ -27,7 +27,9 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
 
     @Override
     public void onBindViewHolder(@NonNull PeopleViewHolder peopleViewHolder, int i) {
-        peopleViewHolder.txtPersonIntendedFloor.setText(String.valueOf(listOfPeople.get(i).getIntendedFloor()));
+        if (listOfPeople.get(i) != null) {
+            peopleViewHolder.txtPersonIntendedFloor.setText(String.valueOf(listOfPeople.get(i).getIntendedFloor()));
+        }
     }
 
     @Override

@@ -58,13 +58,14 @@ public class WithStopElevatorStrategy implements MovingStrategy {
     }
 
     @Override
-    public void addOrder(int floorId, Elevator elevator) {
+    public boolean receiveOrder(int floorId, Elevator elevator) {
         int currentFloot = elevator.getCurrentFloor();
         if(Math.abs(floorId - currentFloot) <= Math.abs(elevator.getOrders().get(0) - currentFloot)){
             elevator.getOrders().add(0, floorId);
         } else {
 
         }
+        return false;
     }
 
     @Override

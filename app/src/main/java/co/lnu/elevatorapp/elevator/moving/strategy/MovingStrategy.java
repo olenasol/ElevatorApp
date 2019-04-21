@@ -7,7 +7,7 @@ import co.lnu.elevatorapp.elevator.MovingDirection;
 public interface MovingStrategy {
     void move(Elevator elevator, Dispatcher dispatcher);
 
-    void addOrder(int floorId, Elevator elevator);
+    boolean receiveOrder(int floorId, Elevator elevator);
 
     void addIntendedFloor(int floorId, Elevator elevator);
 }
