@@ -13,7 +13,7 @@ import java.util.concurrent.Executors;
 
 public class Dispatcher {
     private Building building;
-    ExecutorService service;
+    private ExecutorService service;
     private ElevatorSimulationPresenter presenter;
     private List<Integer> waitingFloors;
 
@@ -30,15 +30,11 @@ public class Dispatcher {
         }
     }
 
-    public void startMoving(int elevatorId) {
+    private void startMoving(int elevatorId) {
         Elevator elevator = building.getElevatorList().stream()
                 .filter(el -> el.getElevatorId() == elevatorId).findAny().orElse(null);
         if (elevator != null) {
             elevator.setElevatorState(ElevatorState.MOVE);
-//            elevator.move();
-//            ExecutorService executor = Executors.newSingleThreadExecutor();
-//            executor.execute(elevator::move);
-//            service.submit(elevator::move);
         }
     }
 

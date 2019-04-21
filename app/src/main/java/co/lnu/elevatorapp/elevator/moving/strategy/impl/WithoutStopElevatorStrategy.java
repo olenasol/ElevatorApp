@@ -5,6 +5,7 @@ import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.elevator.ElevatorState;
 import co.lnu.elevatorapp.elevator.moving.strategy.MovingStrategy;
 
+import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
                 }
                 int duration = 0;
                 List<Integer> orders = elevator.getOrders();
-                if(!orders.isEmpty()) {
+                if (!orders.isEmpty()) {
                     duration = Math.abs(elevator.getCurrentFloor() - elevator.getOrders().get(0)) * 1000;
                     System.out.println(elevatorId + ": " + elevator.getCurrentFloor() + " " + elevator.getElevatorState());
                     dispatcher.moveToFloor(elevatorId, orders.get(0), duration);
@@ -49,7 +50,7 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
             dispatcher.transferFromElevator(elevator);
             elevator.setElevatorState(elevatorState);
             try {
-                Thread.sleep(1000);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
@@ -69,9 +70,15 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
     @Override
     public void addIntendedFloor(int floorId, Elevator elevator) {
         List<Integer> orders = elevator.getOrders();
-        if (orders.isEmpty() || orders.get(0) != floorId) {
+        if (orders.isEmpty() || !orders.contains(floorId)) {
             orders.add(floorId);
-            orders.sort(Comparator.comparingInt(o -> o));
+            orders.sort(Comparator.comparingInt(o -> getOrder(elevator.getCurrentFloor(), orders) * o));
         }
+    }
+
+    private int getOrder(int currentFloor, List<Integer> orders) {
+        int max = orders.stream().max(Comparator.comparingInt(o -> o)).get();
+        int min = orders.stream().min(Comparator.comparingInt(o -> o)).get();
+        return  Math.abs(max - currentFloor) - Math.abs(min - currentFloor);
     }
 }
