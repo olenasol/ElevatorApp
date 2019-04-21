@@ -106,5 +106,7 @@ public class Elevator {
         movingStrategy.addOrder(floorId, this);
     }
 
-    ;
+    public void addIntendedFloor(int floorId){
+        movingStrategy.addIntendedFloor(floorId, this);
+    }
 }

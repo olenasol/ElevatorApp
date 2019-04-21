@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface ElevatorSimulationView {
         void moveToPersonOutOfScreen(int floor, int personNumber, int liftNumber);
-        void moveToFloor(int elevatorNumber, int intendedFloor);
+        void moveToFloor(int elevatorNumber, int intendedFloor, int duration);
         void removePersonFromLift(int liftNumber, int personNumber);
         void generateBuildingUI( List<Floor> floors, List<Elevator> elevators);
 }

@@ -60,7 +60,7 @@ public class ElevatorSimulationPresenterImpl implements ElevatorSimulationPresen
     }
 
     @Override
-    public void moveToFloor(int elevatorId, int floorId) {
-        view.moveToFloor(elevatorId, floorId);
+    public void moveToFloor(int elevatorId, int floorId, int duration) {
+        view.moveToFloor(elevatorId, floorId, duration);
     }
 }

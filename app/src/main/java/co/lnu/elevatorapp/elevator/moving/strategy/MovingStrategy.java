@@ -8,4 +8,6 @@ public interface MovingStrategy {
     void move(Elevator elevator, Dispatcher dispatcher);
 
     void addOrder(int floorId, Elevator elevator);
+
+    void addIntendedFloor(int floorId, Elevator elevator);
 }

@@ -15,7 +15,7 @@ public class PersonGenerator {
     private Dispatcher dispatcher;
     private static final double MAX_PERSON_WEIGHT = 100;
     private static final double MIN_PERSON_WEIGHT = 15;
-    private static final int TIMEOUT_DELAY = 15;
+    private static final int TIMEOUT_DELAY = 6;
     private int count = 0;
 
     private int buildingHeight;
@@ -42,11 +42,6 @@ public class PersonGenerator {
             double weight = ThreadLocalRandom.current().nextDouble(MIN_PERSON_WEIGHT, MAX_PERSON_WEIGHT);
 
             dispatcher.addPeopleToFloor(new Person(floorNumber, floorNumberToGo, weight));
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
 //        }
     }
 }
