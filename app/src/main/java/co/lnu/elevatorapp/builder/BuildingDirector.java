@@ -53,7 +53,7 @@ public class BuildingDirector {
     }
 
     private void addFloors(int numberOfFloors) {
-        for (int floorIndex = 1; floorIndex <= numberOfFloors; floorIndex++) {
+        for (int floorIndex = 0; floorIndex < numberOfFloors; floorIndex++) {
             buildingBuilder.setFloor(
                     floorBuilder.createNewFloor()
                             .setFloorId(floorIndex)
@@ -63,13 +63,12 @@ public class BuildingDirector {
     }
 
     private void addElevators(int numberOfElevators) {
-        for (int elevatorIndex = 1; elevatorIndex <= numberOfElevators; elevatorIndex++) {
+        for (int elevatorIndex = 0; elevatorIndex < numberOfElevators; elevatorIndex++) {
             buildingBuilder.setElevator(
                     elevatorBuilder.createNewElevator()
                             .setElevatorId(elevatorIndex)
                             .setDispatcher(dispatcher)
                             .setMaxWeight(MAX_WEIGHT)
-                            .setElevatorState(ElevatorState.STOP)
                             .setMovingStrategy(movingStrategyEnumMap.get(MovingStrategyType.getRandomMovingStrategyType()))
                             .build());
 

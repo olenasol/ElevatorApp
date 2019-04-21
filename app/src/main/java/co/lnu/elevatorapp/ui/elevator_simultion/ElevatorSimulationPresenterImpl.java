@@ -1,32 +1,33 @@
 package co.lnu.elevatorapp.ui.elevator_simultion;
 
+import android.os.Handler;
+import android.os.Looper;
+import android.os.Message;
 import co.lnu.elevatorapp.builder.Building;
-import co.lnu.elevatorapp.builder.BuildingDirector;
-import co.lnu.elevatorapp.elevator.Elevator;
-import co.lnu.elevatorapp.floor.Floor;
 import co.lnu.elevatorapp.person.Person;
 
-import java.util.ArrayList;
-import java.util.List;
+import static co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationFragment.UPDATE_ELEVATOR;
+import static co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationFragment.UPDATE_FLOOR;
 
 public class ElevatorSimulationPresenterImpl implements ElevatorSimulationPresenter {
 
-    private int numberOfFloor;
+    private int numberOfFloors;
     private int numberOfElevators;
     private int floorHeight;
     private ElevatorSimulationView view;
     private ElevatorSimulationInteractor interactor;
+    private Handler handler;
 
-    public ElevatorSimulationPresenterImpl(ElevatorSimulationView view) {
-
+    public ElevatorSimulationPresenterImpl(ElevatorSimulationView view, Handler handler) {
         this.view = view;
+        this.handler = handler;
         this.interactor = new ElevatorSimulationInteractorImpl(this);
     }
 
 
     @Override
     public void setFloorHeight(int height) {
-        floorHeight = height / numberOfFloor;
+        floorHeight = height / numberOfFloors;
     }
 
     @Override
@@ -41,12 +42,25 @@ public class ElevatorSimulationPresenterImpl implements ElevatorSimulationPresen
 
     @Override
     public void onViewCreated(int floorNumber, int elevatorNumber) {
-        numberOfFloor = floorNumber;
+        numberOfFloors = floorNumber;
         numberOfElevators = elevatorNumber;
         Building building = interactor.getBuilding(floorNumber, elevatorNumber);
-        view.generateBuildingUI(building.getFloorList(),building.getElevatorList());
-        interactor.getPerson();
+        view.generateBuildingUI(building.getFloorList(), building.getElevatorList());
+        interactor.startPersonGenerating();
     }
 
+    @Override
+    public void notifyFloor(int floorId) {
+        handler.sendEmptyMessage(UPDATE_FLOOR);
+    }
 
+    @Override
+    public void notifyElevator(int elevatorId) {
+        handler.sendEmptyMessage(UPDATE_ELEVATOR);
+    }
+
+    @Override
+    public void moveToFloor(int elevatorId, int floorId) {
+        view.moveToFloor(elevatorId, floorId);
+    }
 }

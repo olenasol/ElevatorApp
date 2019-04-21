@@ -8,9 +8,7 @@ import java.util.List;
 
 public class RandomIncomingStrategy implements IncomingStrategy {
     @Override
-    public void reorderQueue(List<Person> personList, Elevator elevator) {//on elevator arrive
-//        elevator.
-//        personList.stream().findFirst().get().getIntendedFloor()
-
+    public List<Person> getPeopleToComeIn(List<Person> personList, Elevator elevator) {
+        return null;
     }
 }

@@ -17,4 +17,9 @@ public interface ElevatorSimulationPresenter {
 
     void onViewCreated(int floorNumber, int elevatorNumber);
 
+    void notifyFloor(int floorId);
+
+    void notifyElevator(int elevatorId);
+
+    void moveToFloor(int elevatorId, int floorId);
 }

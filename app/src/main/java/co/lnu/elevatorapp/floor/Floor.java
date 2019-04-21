@@ -42,8 +42,7 @@ public class Floor {
         personList.add(person);
     }
 
-    public void reorderQueue(Elevator elevator){
-        incomingStrategy.reorderQueue(personList, elevator);//direction  floor to go lift
-//        personList
+    public List<Person> getPeopleToComeIn(Elevator elevator){
+        return incomingStrategy.getPeopleToComeIn(personList, elevator);
     }
 }

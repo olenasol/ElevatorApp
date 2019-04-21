@@ -7,6 +7,5 @@ import co.lnu.elevatorapp.person.Person;
 import java.util.List;
 
 public interface IncomingStrategy {
-    void reorderQueue(List<Person> personList, Elevator elevator);
-
+    List<Person> getPeopleToComeIn(List<Person> personList, Elevator elevator);
 }

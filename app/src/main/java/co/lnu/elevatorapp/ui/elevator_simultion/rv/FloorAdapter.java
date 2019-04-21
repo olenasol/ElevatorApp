@@ -15,6 +15,7 @@ import java.util.List;
 
 public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.FloorViewHolder> {
 
+    public static final String ARGS_PERSON = "args_person";
     private List<Floor> listOfFloors;
     private Context context;
 
@@ -48,12 +49,6 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.FloorViewHol
         listOfFloors.get(floorNumber).getPeople().remove(personNumber);
         notifyItemChanged(floorNumber);
         return person;
-    }
-
-    public void addPersonToPosition(int floorNumber, Person person) {
-        List<Person> people =listOfFloors.get(floorNumber).getPeople();
-        listOfFloors.get(floorNumber).getPeople().add(person);
-        notifyItemChanged(floorNumber);
     }
 
     class FloorViewHolder extends RecyclerView.ViewHolder {

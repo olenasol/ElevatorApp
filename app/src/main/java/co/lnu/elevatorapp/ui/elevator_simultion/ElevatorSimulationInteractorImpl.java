@@ -1,8 +1,11 @@
 package co.lnu.elevatorapp.ui.elevator_simultion;
 
 import android.util.Log;
+
 import co.lnu.elevatorapp.builder.Building;
 import co.lnu.elevatorapp.builder.BuildingDirector;
+import co.lnu.elevatorapp.dispatcher.Dispatcher;
+import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.floor.Floor;
 import co.lnu.elevatorapp.person.Person;
 import co.lnu.elevatorapp.person.PersonGenerator;
@@ -13,6 +16,8 @@ public class ElevatorSimulationInteractorImpl implements ElevatorSimulationInter
 
     private Building building;
     private ElevatorSimulationPresenter presenter;
+    private int numberOfFoloors;
+    private Dispatcher dispatcher;
 
     public ElevatorSimulationInteractorImpl(ElevatorSimulationPresenter presenter) {
         this.presenter = presenter;
@@ -20,18 +25,19 @@ public class ElevatorSimulationInteractorImpl implements ElevatorSimulationInter
 
     @Override
     public Building getBuilding(int floorNumber, int elevatorNumber) {
+        numberOfFoloors = floorNumber;
         BuildingDirector buildingDirector = new BuildingDirector(null);
         building = buildingDirector.construct(floorNumber, elevatorNumber);
+        dispatcher = new Dispatcher(building, presenter);
+        for (Elevator elevator: building.getElevatorList()){
+            elevator.setDispatcher(dispatcher);
+        }
         return building;
     }
 
     @Override
-    public void getPerson(){
-        PersonGenerator personGenerator = new PersonGenerator(building,null);
-        int floorNumber = personGenerator.generatePerson();
-        Person person = building.getFloorList().get(floorNumber).getPeople().get(building.getFloorList().get(floorNumber).getPeople().size()-1);
-        //presenter.setPersonToFloor(floorNumber,person);
-        Log.d("TEST","TEST");
+    public void startPersonGenerating() {
+        PersonGenerator personGenerator = new PersonGenerator(dispatcher, numberOfFoloors);
+        personGenerator.startGenerating();
     }
-
 }

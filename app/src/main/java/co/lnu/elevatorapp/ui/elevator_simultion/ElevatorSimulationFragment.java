@@ -5,7 +5,7 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.Looper;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,7 +17,6 @@ import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.floor.Floor;
-import co.lnu.elevatorapp.person.Person;
 import co.lnu.elevatorapp.ui.elevator_simultion.rv.ElevationAdapter;
 import co.lnu.elevatorapp.ui.elevator_simultion.rv.FloorAdapter;
 import co.lnu.elevatorapp.R;
@@ -36,11 +35,15 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
     private RecyclerView elevatorRecyclerView;
     private FloorAdapter floorAdapter;
     private ElevationAdapter elevationAdapter;
+    private Handler handler;
+    final static int UPDATE_FLOOR = 1;
+    final static int UPDATE_ELEVATOR = 2;
+    final static int ELEVATOR_MOVE_ANIMATION = 3;
 
     public static ElevatorSimulationFragment newInstance(int floorNumber, int elevatorNumber) {
         Bundle bundle = new Bundle();
-        bundle.putInt(ARGS_FLOORNUMBER,floorNumber);
-        bundle.putInt(ARGS_ELEVATORNUMBER,elevatorNumber);
+        bundle.putInt(ARGS_FLOORNUMBER, floorNumber);
+        bundle.putInt(ARGS_ELEVATORNUMBER, elevatorNumber);
         ElevatorSimulationFragment fragment = new ElevatorSimulationFragment();
         fragment.setArguments(bundle);
         return fragment;
@@ -57,22 +60,39 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
         super.onViewCreated(view, savedInstanceState);
         floorRecyclerView = view.findViewById(R.id.floorRecyclerView);
         elevatorRecyclerView = view.findViewById(R.id.elevatorRecyclerView);
-        presenter = new ElevatorSimulationPresenterImpl(this);
-        if(getArguments() != null)
-            presenter.onViewCreated(getArguments().getInt(ARGS_FLOORNUMBER,5),
-                getArguments().getInt(ARGS_ELEVATORNUMBER,1));
+        handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                switch (msg.what) {
+                    case UPDATE_FLOOR:
+                        floorAdapter.notifyDataSetChanged();
+                        break;
+                    case UPDATE_ELEVATOR:
+                        elevationAdapter.notifyDataSetChanged();
+                        break;
+                    case ELEVATOR_MOVE_ANIMATION:
+                        ((ObjectAnimator) msg.obj).start();
+                        break;
+                }
+            }
+        };
+        presenter = new ElevatorSimulationPresenterImpl(this, handler);
+        if (getArguments() != null)
+            presenter.onViewCreated(getArguments().getInt(ARGS_FLOORNUMBER, 5),
+                    getArguments().getInt(ARGS_ELEVATORNUMBER, 1));
     }
+
     @Override
-    public void generateBuildingUI(List<Floor> floors, List<Elevator> elevators){
+    public void generateBuildingUI(List<Floor> floors, List<Elevator> elevators) {
         initFloorRV(floors);
         initElevatorRV(elevators);
     }
 
 
     private void initElevatorRV(List<Elevator> elevators) {
-        elevationAdapter = new ElevationAdapter(elevators,getArguments().getInt(ARGS_FLOORNUMBER,5));
+        elevationAdapter = new ElevationAdapter(elevators, getArguments().getInt(ARGS_FLOORNUMBER, 5));
         elevatorRecyclerView.setAdapter(elevationAdapter);
-        elevatorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL, false));
+        elevatorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
     }
 
     private void initFloorRV(List<Floor> floors) {
@@ -85,36 +105,41 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
         });
         floorAdapter = new FloorAdapter(floors);
         floorRecyclerView.setAdapter(floorAdapter);
-        floorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        floorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.VERTICAL, true));
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(0,4), 5000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() ->moveToPersonOutOfScreen(4,2,0), 10000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(0,1), 15000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> removePersonFromLift(0,0), 20000);
-        //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(1,2), 15000);
+//        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(1,2), 15000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(1,0), 25000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(0,6), 35000);
-        
+
     }
+
     @Override
-    public void removePersonFromLift(int liftNumber,int personNumber){
-        elevationAdapter.removePerson(liftNumber,personNumber);
+    public void removePersonFromLift(int liftNumber, int personNumber) {
+        elevationAdapter.removePerson(liftNumber, personNumber);
     }
+
     @Override
-    public void moveToFloor(int elevatorNumber,int intendedFloor) {
+    public void moveToFloor(int elevatorNumber, int intendedFloor) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(
                 (elevatorRecyclerView.getLayoutManager()).findViewByPosition(elevatorNumber)
                         .findViewById(R.id.elevator), "translationY",
                 presenter.moveToFloorYDelta(intendedFloor));
-        animation.setDuration(5000);
-        animation.start();
+        animation.setDuration(2000);
+        Message message = new Message();
+        message.what = ELEVATOR_MOVE_ANIMATION;
+        message.obj = animation;
+        handler.sendMessage(message);
     }
 
     @Override
-    public void moveToPersonOutOfScreen(int floor,int personNumber, int liftNumber) {
+    public void moveToPersonOutOfScreen(int floor, int personNumber, int liftNumber) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(
-                ((RecyclerView)(floorRecyclerView.getLayoutManager()).findViewByPosition(floor).findViewById(R.id.rvPeople)).getLayoutManager()
-                .findViewByPosition(personNumber), "translationX",
-                -(liftNumber+1)*200);
+                ((RecyclerView) (floorRecyclerView.getLayoutManager()).findViewByPosition(floor).findViewById(R.id.rvPeople)).getLayoutManager()
+                        .findViewByPosition(personNumber), "translationX",
+                -(liftNumber + 1) * 200);
         animation.setDuration(1000);
         animation.start();
         animation.addListener(new AnimatorListenerAdapter() {
@@ -126,7 +151,7 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
             @Override
             public void onAnimationEnd(Animator animation) {
                 super.onAnimationEnd(animation);
-                elevationAdapter.addPerson(liftNumber,floorAdapter.removePerson(floor,personNumber));
+                elevationAdapter.addPerson(liftNumber, floorAdapter.removePerson(floor, personNumber));
             }
 
             @Override
@@ -150,5 +175,4 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
             }
         });
     }
-
 }

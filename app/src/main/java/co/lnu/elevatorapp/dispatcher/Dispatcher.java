@@ -4,52 +4,37 @@ import co.lnu.elevatorapp.builder.Building;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.elevator.ElevatorState;
 import co.lnu.elevatorapp.elevator.MovingDirection;
-import co.lnu.elevatorapp.mediator.Presenter;
+import co.lnu.elevatorapp.person.Person;
+import co.lnu.elevatorapp.ui.elevator_simultion.ElevatorSimulationPresenter;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Dispatcher {
-    private Presenter presenter;
     private Building building;
     ExecutorService service;
+    private ElevatorSimulationPresenter presenter;
 
-    public Dispatcher(Building building, Presenter presenter) {
+    public Dispatcher(Building building, ElevatorSimulationPresenter presenter) {
         this.building = building;
         this.presenter = presenter;
         service = Executors.newFixedThreadPool(building.getElevatorList().size());
     }
 
-    public void startMoving(int elevatorId, MovingDirection direction) {
+    public void startMoving(int elevatorId) {
         Elevator elevator = building.getElevatorList().stream()
                 .filter(el -> el.getElevatorId() == elevatorId).findAny().orElse(null);
-        ElevatorState state = direction.equals(MovingDirection.UP) ? ElevatorState.MOVE_UP : ElevatorState.MOVE_DOWN;
         if (elevator != null) {
-            elevator.setElevatorState(state);
-            ScheduledExecutorService scheduledExecutor = Executors.newSingleThreadScheduledExecutor();
-            scheduledExecutor.scheduleAtFixedRate(() -> elevator.move(direction), 0, 2, TimeUnit.SECONDS);
+            elevator.setElevatorState(ElevatorState.MOVE);
+            service.submit(elevator::move);
         }
     }
 
-    public void startMovingView(int elevatorId, MovingDirection direction) {
+    public void moveToFloor(int elevatorId, int floor) {
         //TODO 4/19/2019 uncomment
-       // presenter.startMoving(elevatorId, direction);
-    }
-
-    public void stopMovingView(int elevatorId) {
-        //TODO 4/19/2019 uncomment
-        //       presenter.stopMoving(elevatorId);
-    }
-
-    public void stopMoving(int elevatorId) {
-    }
-
-    public void returnFloor(int elevatorId, int floor) {
-        //TODO 4/19/2019 uncomment
-        //presenter.returnFloor(elevatorId, floor);
+        presenter.moveToFloor(elevatorId, floor);
     }
 
     public void openDoor(int elevatorId) {
@@ -60,19 +45,73 @@ public class Dispatcher {
 
     }
 
-    public void removePeopleFromElevator(List<Integer> peopleIds, int elevatorId) {
-
+    public void addPeopleToFloor(Person person) {
+        final List<Person> personListOnFloor = building.getFloorList().get(person.getFloorId()).getPeople();
+        personListOnFloor.add(person);
+        presenter.notifyFloor(person.getFloorId());
+        if (personListOnFloor.size() == 1) {
+            addElevatorCall(person);
+        }
     }
 
-    public void addPeopleToElevatorOnFloor(List<Integer> peopleIds, int floorId) {
-
+    private void addElevatorCall(Person person) {
+        List<Elevator> elevators = getFreeElevators();
+        Elevator optimalElevator = null;
+        optimalElevator = getOptimalElevator(person.getFloorId(), elevators);
+        optimalElevator.getOrders().add(person.getFloorId());
+        optimalElevator.addOrder(person.getIntendedFloor());
+        if (!optimalElevator.getElevatorState().equals(ElevatorState.MOVE)) {
+            optimalElevator.setElevatorState(ElevatorState.MOVE);
+            startMoving(optimalElevator.getElevatorId());
+        }
     }
 
-    public void addFloorToQueue(int elevatorId, int floorId) {
-
+    private List<Elevator> getFreeElevators() {
+        List<Elevator> freeElevators = new ArrayList<>();
+        for (Elevator elevator : building.getElevatorList()) {
+            if (elevator.getElevatorState().equals(ElevatorState.FREE)) {
+                freeElevators.add(elevator);
+            }
+        }
+        return freeElevators;
     }
 
-    public void addPeopleToFloor(List<Integer> peopleIds, int floorId) {
+    private Elevator getOptimalElevator(int floorId, List<Elevator> elevators) {
+        int minDifference = building.getFloorList().size();
+        if (elevators.isEmpty()) {
+            elevators = building.getElevatorList();
+        }
+        Elevator optimalElevator = elevators.get(0);
+        for (Elevator elevator : elevators) {
+            int diff = Math.abs(elevator.getCurrentFloor() - floorId);
+            if (diff < minDifference) {
+                minDifference = diff;
+                optimalElevator = elevator;
+            }
+        }
+        return optimalElevator;
+    }
 
+    public void transferFromFloorToElevator(int floorId, Elevator elevator) {
+        List<Person> peopleFrom = building.getFloorList().get(floorId).getPeopleToComeIn(elevator);
+        if (!peopleFrom.isEmpty()) {
+            addToList(peopleFrom, elevator.getPeople());
+            building.getFloorList().get(floorId).getPeople().removeAll(peopleFrom);
+            presenter.notifyFloor(floorId);
+            presenter.notifyElevator(elevator.getElevatorId());
+        }
+    }
+
+    private void addToList(List<Person> peopleFrom, List<Person> peopleTo) {
+        peopleTo.addAll(peopleFrom);
+    }
+
+    public void transferFromElevator(Elevator elevator) {
+        for (Person person : elevator.getPeople()) {
+            if (person.getIntendedFloor() == elevator.getCurrentFloor()) {
+                elevator.getPeople().remove(person);
+            }
+        }
+        presenter.notifyElevator(elevator.getElevatorId());
     }
 }
