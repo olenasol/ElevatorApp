@@ -3,14 +3,22 @@ package co.lnu.elevatorapp.person;
 public class Person  {
     private int floorId;
     private int intendedFloor;
-    private double weight;
+    private Color color;
 
-    public Person(int floorId, int intendedFloor, double weight) {
+    public enum Color {
+        GREEN,
+        BLUE,
+        YELLOW,
+        RED
+    }
+
+    public Person(int floorId, int intendedFloor,Color color) {
         this.floorId = floorId;
         this.intendedFloor = intendedFloor;
-        this.weight = weight;
-
+        this.color = color;
     }
+
+    public Color getColor(){return color;}
 
     public int getFloorId() {
         return floorId;
@@ -18,9 +26,5 @@ public class Person  {
 
     public int getIntendedFloor() {
         return intendedFloor;
-    }
-
-    public double getWeight() {
-        return weight;
     }
 }

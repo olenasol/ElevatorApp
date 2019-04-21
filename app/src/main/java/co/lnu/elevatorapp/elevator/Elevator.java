@@ -16,7 +16,7 @@ public class Elevator {
 
     protected int elevatorId;
     protected Integer currentFloor;
-    protected double maxWeight;
+    protected int maxCapacity;
     protected ElevatorState elevatorState;
     protected List<Person> people;
     protected List<Integer> orders;
@@ -70,12 +70,12 @@ public class Elevator {
         this.elevatorState = elevatorState;
     }
 
-    public double getMaxWeight() {
-        return maxWeight;
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 
-    public void setMaxWeight(double maxWeight) {
-        this.maxWeight = maxWeight;
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     public List<Person> getPeople() {

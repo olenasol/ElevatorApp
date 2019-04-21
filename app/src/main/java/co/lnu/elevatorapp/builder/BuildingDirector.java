@@ -19,7 +19,7 @@ import co.lnu.elevatorapp.floor.incoming.strategy.impl.RandomIncomingStrategy;
 import java.util.EnumMap;
 
 public class BuildingDirector {
-    public static final int MAX_WEIGHT = 500;
+    public static final int MAX_CAPACITY = 6;
 
     private BuildingBuilder buildingBuilder;
     private ElevatorBuilder elevatorBuilder;
@@ -68,7 +68,7 @@ public class BuildingDirector {
                     elevatorBuilder.createNewElevator()
                             .setElevatorId(elevatorIndex)
                             .setDispatcher(dispatcher)
-                            .setMaxWeight(MAX_WEIGHT)
+                            .setMaxCapacity(MAX_CAPACITY)
                             .setMovingStrategy(movingStrategyEnumMap.get(MovingStrategyType.getRandomMovingStrategyType()))
                             .build());
 

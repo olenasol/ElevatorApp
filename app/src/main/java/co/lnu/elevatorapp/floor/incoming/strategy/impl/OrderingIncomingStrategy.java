@@ -11,8 +11,17 @@ import java.util.List;
 public class OrderingIncomingStrategy implements IncomingStrategy {
     @Override
     public List<Person> getPeopleToComeIn(List<Person> personList, Elevator elevator) {
-        if(personList.isEmpty())
+        if (personList.isEmpty())
             return personList;
-        return Arrays.asList(personList.get(0));
+        double peopleInElevatorAmount = elevator.getPeople().size();
+
+        List<Person> peopleToComeIn = new ArrayList<>();
+        int index = 0;
+        while (peopleInElevatorAmount + peopleToComeIn.size() < elevator.getMaxCapacity()
+                && peopleToComeIn.size() < personList.size()) {
+            peopleToComeIn.add(personList.get(index++));
+        }
+
+        return peopleToComeIn;
     }
 }
