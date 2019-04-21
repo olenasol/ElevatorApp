@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Elevator {
-    public static final int START_FLOOR = 1;
+    public static final int START_FLOOR = 0;
 
     // set of colls max min
     //current floor++ run
@@ -16,7 +16,7 @@ public class Elevator {
 
     protected int elevatorId;
     protected Integer currentFloor;
-    protected double maxWeight;
+    protected int maxCapacity;
     protected ElevatorState elevatorState;
     protected List<Person> people;
     protected List<Integer> orders;
@@ -24,7 +24,7 @@ public class Elevator {
     private MovingStrategy movingStrategy;
 
     public Elevator() {
-        elevatorState = ElevatorState.STOP;
+        elevatorState = ElevatorState.FREE;
         orders = new ArrayList<>();
         currentFloor = START_FLOOR;
         people = new ArrayList<>();
@@ -54,11 +54,11 @@ public class Elevator {
         this.movingStrategy = movingStrategy;
     }
 
-    public int getCurrentFloor() {
+    public Integer getCurrentFloor() {
         return currentFloor;
     }
 
-    public void setCurrentFloor(int currentFloor) {
+    public void setCurrentFloor(Integer currentFloor) {
         this.currentFloor = currentFloor;
     }
 
@@ -70,12 +70,12 @@ public class Elevator {
         this.elevatorState = elevatorState;
     }
 
-    public double getMaxWeight() {
-        return maxWeight;
+    public int getMaxCapacity() {
+        return maxCapacity;
     }
 
-    public void setMaxWeight(double maxWeight) {
-        this.maxWeight = maxWeight;
+    public void setMaxCapacity(int maxCapacity) {
+        this.maxCapacity = maxCapacity;
     }
 
     public List<Person> getPeople() {
@@ -98,11 +98,13 @@ public class Elevator {
         dispatcher.openDoor(elevatorId);
     }
 
-    public void move(MovingDirection direction) {
-        movingStrategy.move(this, dispatcher, direction);
+    public void move() {
+        movingStrategy.move(this, dispatcher);
     }
 
-    ;
+    public void addOrder(int floorId) {
+        movingStrategy.addOrder(floorId, this);
+    }
 
-//    public abstract void addOrder(int floorId);
+
 }

@@ -13,11 +13,11 @@ public class Main {
         Building building = buildingDirector.construct(7, 4);
 
         Dispatcher dispatcher = new Dispatcher(building, null);
-        PersonGenerator personGenerator = new PersonGenerator(building, dispatcher);
+//        PersonGenerator personGenerator = new PersonGenerator(building, dispatcher);
 
 
 //            building.getElevatorList().stream().forEach(
-//                    e ->{ building.getFloorList().get(e.getCurrentFloor()-1).reorderQueue(e);
+//                    e ->{ building.getFloorList().get(e.getCurrentFloor()-1).getPeopleToComeIn(e);
 //                    Executors.newScheduledThreadPool(1).scheduleAtFixedRate(() -> {}, 0, TIMEOUT_DELAY, TimeUnit.SECONDS);
 //
 //            );

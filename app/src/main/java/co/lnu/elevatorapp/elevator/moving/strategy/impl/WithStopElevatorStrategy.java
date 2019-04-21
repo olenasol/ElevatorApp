@@ -11,49 +11,51 @@ import java.util.Collections;
 public class WithStopElevatorStrategy implements MovingStrategy {
 
     @Override
-    public void move(Elevator elevator, Dispatcher dispatcher, MovingDirection direction) {
+    public void move(Elevator elevator, Dispatcher dispatcher) {
         int elevatorId = elevator.getElevatorId();
-        int finalFloor = 0;
-        if (elevator.getElevatorState().equals(ElevatorState.MOVE_UP)) {
-            finalFloor = Collections.max(elevator.getOrders());
-        } else if (elevator.getElevatorState().equals(ElevatorState.MOVE_DOWN)) {
-            finalFloor = Collections.min(elevator.getOrders());
-        }
+//        int finalFloor = 0;
+//        if (elevator.getElevatorState().equals(ElevatorState.MOVE)) {
+//            finalFloor = Collections.max(elevator.getOrders());
+//        } else if (elevator.getElevatorState().equals(ElevatorState.MOVE_DOWN)) {
+//            finalFloor = Collections.min(elevator.getOrders());
+//        }
         Integer currentFloor = elevator.getCurrentFloor();
-        for (int i = currentFloor; i <= finalFloor; i++, currentFloor++) {
-            dispatcher.returnFloor(elevatorId, currentFloor);
-//            stopMovingIfIsOrder(currentFloor, elevator, dispatcher, direction);
+//        for (int i = currentFloor; i <= elevator.getOrders().size() - 1; i++, currentFloor++) {
+        for (Integer floor : elevator.getOrders()) {
+            dispatcher.moveToFloor(elevatorId, currentFloor);
+            stopMovingIfIsOrder(currentFloor, elevator, dispatcher, elevator.getElevatorState());
 //            elevator.getOrders().remove(currentFloor);
             System.out.println(elevatorId + " " + currentFloor);
+            currentFloor++;
             try {
-                Thread.sleep(500);
+                Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
         }
-        elevator.setElevatorState(ElevatorState.STOP);
+        elevator.setElevatorState(ElevatorState.FREE);
     }
 
-    private void stopMovingIfIsOrder(int floorId, Elevator elevator, Dispatcher dispatcher, MovingDirection direction) {
+    private void stopMovingIfIsOrder(int floorId, Elevator elevator, Dispatcher dispatcher, ElevatorState elevatorState) {
         if (elevator.getOrders().contains(floorId)) {
-            dispatcher.openDoor(elevator.getElevatorId());
+            elevator.setElevatorState(ElevatorState.STOP);
+            dispatcher.transferFromFloorToElevator(floorId, elevator);
             try {
-                Thread.sleep(5000);
+                Thread.sleep(3000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-//            dispatcher.startMovingView(elevator.getElevatorId(), direction);
+            elevator.setElevatorState(elevatorState);
         }
     }
 
-    //    @Override
-    public void addOrder(int floorId) {
-//        if (elevatorState.equals(ElevatorState.MOVE_UP) && currentFloor <= floorId) {
-//            orders.add(floorId);
-//            orders.sort(Comparator.comparingInt(o -> o));
-//        } else if (elevatorState.equals(ElevatorState.MOVE_DOWN) && currentFloor >= floorId) {
-//            orders.sort(Comparator.comparingInt(o -> -o));
-//            orders.add(floorId);
-//        }
+    @Override
+    public void addOrder(int floorId, Elevator elevator) {
+        int currentFloot = elevator.getCurrentFloor();
+        if(Math.abs(floorId - currentFloot) <= Math.abs(elevator.getOrders().get(0) - currentFloot)){
+            elevator.getOrders().add(0, floorId);
+        } else {
+
+        }
     }
 }

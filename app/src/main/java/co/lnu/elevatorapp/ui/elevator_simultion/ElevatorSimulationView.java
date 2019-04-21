@@ -11,5 +11,4 @@ public interface ElevatorSimulationView {
         void moveToFloor(int elevatorNumber, int intendedFloor);
         void removePersonFromLift(int liftNumber, int personNumber);
         void generateBuildingUI( List<Floor> floors, List<Elevator> elevators);
-
 }

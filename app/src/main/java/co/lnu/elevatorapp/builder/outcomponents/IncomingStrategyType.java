@@ -10,6 +10,7 @@ public enum IncomingStrategyType {
     private static final Random RANDOM = new Random();
 
     public static IncomingStrategyType getRandomIncomingStrategy() {
-        return VALUES[RANDOM.nextInt(SIZE)];
+//        return VALUES[RANDOM.nextInt(SIZE)];
+        return ORDERING_STRATEGY;
     }
 }

@@ -19,7 +19,7 @@ import co.lnu.elevatorapp.floor.incoming.strategy.impl.RandomIncomingStrategy;
 import java.util.EnumMap;
 
 public class BuildingDirector {
-    public static final int MAX_WEIGHT = 500;
+    public static final int MAX_CAPACITY = 6;
 
     private BuildingBuilder buildingBuilder;
     private ElevatorBuilder elevatorBuilder;
@@ -53,7 +53,7 @@ public class BuildingDirector {
     }
 
     private void addFloors(int numberOfFloors) {
-        for (int floorIndex = 1; floorIndex <= numberOfFloors; floorIndex++) {
+        for (int floorIndex = 0; floorIndex < numberOfFloors; floorIndex++) {
             buildingBuilder.setFloor(
                     floorBuilder.createNewFloor()
                             .setFloorId(floorIndex)
@@ -63,13 +63,12 @@ public class BuildingDirector {
     }
 
     private void addElevators(int numberOfElevators) {
-        for (int elevatorIndex = 1; elevatorIndex <= numberOfElevators; elevatorIndex++) {
+        for (int elevatorIndex = 0; elevatorIndex < numberOfElevators; elevatorIndex++) {
             buildingBuilder.setElevator(
                     elevatorBuilder.createNewElevator()
                             .setElevatorId(elevatorIndex)
                             .setDispatcher(dispatcher)
-                            .setMaxWeight(MAX_WEIGHT)
-                            .setElevatorState(ElevatorState.STOP)
+                            .setMaxCapacity(MAX_CAPACITY)
                             .setMovingStrategy(movingStrategyEnumMap.get(MovingStrategyType.getRandomMovingStrategyType()))
                             .build());
 
