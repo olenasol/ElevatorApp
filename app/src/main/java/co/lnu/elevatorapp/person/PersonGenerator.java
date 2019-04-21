@@ -6,6 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.TimeUnit;
 
+import android.graphics.Color;
 import co.lnu.elevatorapp.dispatcher.Dispatcher;
 
 /**
@@ -13,8 +14,7 @@ import co.lnu.elevatorapp.dispatcher.Dispatcher;
  */
 public class PersonGenerator {
     private Dispatcher dispatcher;
-    private static final int TIMEOUT_DELAY = 15;
-    private int count = 0;
+    private static final int TIMEOUT_DELAY = 3;
 
     private int buildingHeight;
 
@@ -29,20 +29,13 @@ public class PersonGenerator {
     }
 
     public void generatePerson() {
-//        if(count <= 0) {
-        count++;
         int floorNumber = ThreadLocalRandom.current().nextInt(buildingHeight);
         int floorNumberToGo;
         do {
             floorNumberToGo = ThreadLocalRandom.current().nextInt(buildingHeight);
         } while (floorNumber == floorNumberToGo);
 
-        dispatcher.addPeopleToFloor(new Person(floorNumber, floorNumberToGo));
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//        }
+        Person.Color color = Person.Color.values()[ThreadLocalRandom.current().nextInt(Person.Color.values().length)];
+        dispatcher.addPeopleToFloor(new Person(floorNumber, floorNumberToGo,color));
     }
 }

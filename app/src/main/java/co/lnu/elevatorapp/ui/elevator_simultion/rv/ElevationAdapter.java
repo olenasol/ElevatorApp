@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import co.lnu.elevatorapp.R;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.person.Person;
+import co.lnu.elevatorapp.ui.Utils;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class ElevationAdapter extends RecyclerView.Adapter<ElevationAdapter.Elev
     @Override
     public ElevatorViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         View itemView = LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.viewholder_elevator, viewGroup, false);
-        floorHeight = (viewGroup.getMeasuredHeight()/floorNumber);
+        floorHeight = ((int)(viewGroup.getMeasuredHeight()- Utils.dp2px(viewGroup.getContext(),50))/floorNumber);
         context = viewGroup.getContext();
         return new ElevatorViewHolder(itemView);
     }

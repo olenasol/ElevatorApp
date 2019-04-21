@@ -11,10 +11,12 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.animation.LinearInterpolator;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.floor.Floor;
 import co.lnu.elevatorapp.ui.elevator_simultion.rv.ElevationAdapter;
@@ -127,6 +129,8 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
                 (elevatorRecyclerView.getLayoutManager()).findViewByPosition(elevatorNumber)
                         .findViewById(R.id.elevator), "translationY",
                 presenter.moveToFloorYDelta(intendedFloor));
+        Log.d("ELEVATOR_MOVEMENT", elevatorNumber+" "+intendedFloor+" "+ presenter.moveToFloorYDelta(intendedFloor));
+        animation.setInterpolator(new LinearInterpolator());
         animation.setDuration(2000);
         Message message = new Message();
         message.what = ELEVATOR_MOVE_ANIMATION;
