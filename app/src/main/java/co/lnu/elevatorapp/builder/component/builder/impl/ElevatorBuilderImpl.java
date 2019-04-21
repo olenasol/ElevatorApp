@@ -28,8 +28,8 @@ public class ElevatorBuilderImpl implements ElevatorBuilder {
     }
 
     @Override
-    public ElevatorBuilder setMaxWeight(int maxWeight) {
-        elevator.setMaxWeight(maxWeight);
+    public ElevatorBuilder setMaxCapacity(int maxCapacity) {
+        elevator.setMaxCapacity(maxCapacity);
         return this;
     }
 
