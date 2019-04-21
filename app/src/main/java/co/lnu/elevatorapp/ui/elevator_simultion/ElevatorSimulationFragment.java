@@ -85,7 +85,7 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
         });
         floorAdapter = new FloorAdapter(floors);
         floorRecyclerView.setAdapter(floorAdapter);
-        floorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        floorRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.VERTICAL,true));
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(0,4), 5000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() ->moveToPersonOutOfScreen(4,2,0), 10000);
 //        new Handler(Looper.getMainLooper()).postDelayed(() -> moveToFloor(0,1), 15000);
