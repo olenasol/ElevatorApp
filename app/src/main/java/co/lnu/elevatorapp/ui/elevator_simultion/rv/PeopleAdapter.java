@@ -30,20 +30,22 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
 
     @Override
     public void onBindViewHolder(@NonNull PeopleViewHolder peopleViewHolder, int i) {
-        peopleViewHolder.txtPersonIntendedFloor.setText(String.valueOf(listOfPeople.get(i).getIntendedFloor()));
-        switch (listOfPeople.get(i).getColor()){
-            case GREEN:
-                peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.cicle_background_green));
-                break;
-            case BLUE:
-                peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_blue));
-                break;
-            case RED:
-                peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_red));
-                break;
-            case YELLOW:
-                peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_yellow));
-                break;
+        if (!listOfPeople.isEmpty() && listOfPeople.get(i) != null) {
+            peopleViewHolder.txtPersonIntendedFloor.setText(String.valueOf(listOfPeople.get(i).getIntendedFloor()));
+            switch (listOfPeople.get(i).getColor()) {
+                case GREEN:
+                    peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.cicle_background_green));
+                    break;
+                case BLUE:
+                    peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_blue));
+                    break;
+                case RED:
+                    peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_red));
+                    break;
+                case YELLOW:
+                    peopleViewHolder.txtPersonIntendedFloor.setBackground(context.getDrawable(R.drawable.circle_background_yellow));
+                    break;
+            }
         }
     }
 

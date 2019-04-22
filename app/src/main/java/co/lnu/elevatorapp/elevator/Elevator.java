@@ -9,11 +9,6 @@ import java.util.List;
 
 public class Elevator {
     public static final int START_FLOOR = 0;
-
-    // set of colls max min
-    //current floor++ run
-//    cols for elevator
-
     protected int elevatorId;
     protected Integer currentFloor;
     protected int maxCapacity;
@@ -90,21 +85,15 @@ public class Elevator {
         return orders;
     }
 
-    public final void closeDoor() {
-        dispatcher.closeDoor(elevatorId);
-    }
-
-    public final void openDoor() {
-        dispatcher.openDoor(elevatorId);
-    }
-
     public void move() {
         movingStrategy.move(this, dispatcher);
     }
 
-    public void addOrder(int floorId) {
-        movingStrategy.addOrder(floorId, this);
+    public boolean canReceiveOrder(int floorId) {
+        return movingStrategy.canReceiveOrder(floorId, this);
     }
 
-
+    public void addIntendedFloor(int floorId){
+        movingStrategy.addIntendedFloor(floorId, this);
+    }
 }

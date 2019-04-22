@@ -1,16 +1,10 @@
 package co.lnu.elevatorapp.ui.elevator_simultion;
 
-import android.util.Log;
-
 import co.lnu.elevatorapp.builder.Building;
 import co.lnu.elevatorapp.builder.BuildingDirector;
 import co.lnu.elevatorapp.dispatcher.Dispatcher;
 import co.lnu.elevatorapp.elevator.Elevator;
-import co.lnu.elevatorapp.floor.Floor;
-import co.lnu.elevatorapp.person.Person;
 import co.lnu.elevatorapp.person.PersonGenerator;
-
-import java.util.List;
 
 public class ElevatorSimulationInteractorImpl implements ElevatorSimulationInteractor {
 
@@ -32,6 +26,7 @@ public class ElevatorSimulationInteractorImpl implements ElevatorSimulationInter
         for (Elevator elevator: building.getElevatorList()){
             elevator.setDispatcher(dispatcher);
         }
+        dispatcher.createThreads();
         return building;
     }
 

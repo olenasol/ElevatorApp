@@ -3,61 +3,79 @@ package co.lnu.elevatorapp.elevator.moving.strategy.impl;
 import co.lnu.elevatorapp.dispatcher.Dispatcher;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.elevator.ElevatorState;
-import co.lnu.elevatorapp.elevator.MovingDirection;
 import co.lnu.elevatorapp.elevator.moving.strategy.MovingStrategy;
+
+import java.util.Comparator;
+import java.util.List;
 
 public class WithoutStopElevatorStrategy implements MovingStrategy {
 
     @Override
     public void move(Elevator elevator, Dispatcher dispatcher) {
         int elevatorId = elevator.getElevatorId();
-        Integer currentFloor = elevator.getCurrentFloor();
-        Integer finalFloor = 0;
-        if (elevator.getElevatorState().equals(ElevatorState.MOVE)) {
-            finalFloor = elevator.getOrders().get(0);
-        }
-        do {
-            stopMovingIfIsOrder(elevator.getCurrentFloor(), elevator, dispatcher, elevator.getElevatorState());
-            if (elevator.getOrders().get(0).equals(elevator.getCurrentFloor())) {
-                elevator.getOrders().remove(0);
-                break;
+        while (true) {
+            if (elevator.getElevatorState().equals(ElevatorState.MOVE)) {
+                stopMovingIfIsOrder(elevator.getCurrentFloor(), elevator, dispatcher, elevator.getElevatorState());
+                if (elevator.getOrders().isEmpty()) {
+                    elevator.setElevatorState(ElevatorState.FREE);
+                    System.out.println(elevatorId + " before: " + elevator.getCurrentFloor() + " " + elevator.getElevatorState());
+                    dispatcher.notifyAboutFreeState(elevator);
+                    System.out.println(elevatorId + " after: " + elevator.getCurrentFloor() + " " + elevator.getElevatorState());
+                }
+                int duration = 0;
+                List<Integer> orders = elevator.getOrders();
+                if (!orders.isEmpty()) {
+                    duration = Math.abs(elevator.getCurrentFloor() - elevator.getOrders().get(0)) * 1000;
+                    System.out.println(elevatorId + ": " + elevator.getCurrentFloor() + " " + elevator.getElevatorState());
+                    dispatcher.moveToFloor(elevatorId, orders.get(0), duration);
+                    elevator.setCurrentFloor(elevator.getOrders().get(0));
+                }
+                try {
+                    Thread.sleep(duration);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
             }
-            if(currentFloor < finalFloor) {
-                elevator.setCurrentFloor(++currentFloor);
-            } else {
-                elevator.setCurrentFloor(--currentFloor);
-            }
-            dispatcher.moveToFloor(elevatorId, currentFloor);
-            try {
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        } while (!currentFloor.equals(finalFloor));
-        if (elevator.getOrders().isEmpty()) {
-            elevator.setElevatorState(ElevatorState.FREE);
-        } else {
-            move(elevator, dispatcher);
         }
     }
 
 
     private void stopMovingIfIsOrder(int floorId, Elevator elevator, Dispatcher dispatcher, ElevatorState elevatorState) {
-        if (elevator.getOrders().get(0).equals(floorId)) {
+        List<Integer> orders = elevator.getOrders();
+        if (!orders.isEmpty() && orders.get(0).equals(floorId)) {
             elevator.setElevatorState(ElevatorState.STOP);
             dispatcher.transferFromFloorToElevator(floorId, elevator);
             dispatcher.transferFromElevator(elevator);
+            elevator.setElevatorState(elevatorState);
             try {
                 Thread.sleep(2000);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-            elevator.setElevatorState(elevatorState);
         }
     }
 
     @Override
-    public void addOrder(int floorId, Elevator elevator) {
-        elevator.getOrders().add(floorId);
+    public boolean canReceiveOrder(int floorId, Elevator elevator) {
+        boolean canReceive = false;
+        if (elevator.getElevatorState().equals(ElevatorState.FREE)) {
+            canReceive = true;
+        }
+        return canReceive;
+    }
+
+    @Override
+    public void addIntendedFloor(int floorId, Elevator elevator) {
+        List<Integer> orders = elevator.getOrders();
+        if (orders.isEmpty() || !orders.contains(floorId)) {
+            orders.add(floorId);
+            orders.sort(Comparator.comparingInt(o -> getOrder(elevator.getCurrentFloor(), orders) * o));
+        }
+    }
+
+    private int getOrder(int currentFloor, List<Integer> orders) {
+        int max = orders.stream().max(Comparator.comparingInt(o -> o)).get();
+        int min = orders.stream().min(Comparator.comparingInt(o -> o)).get();
+        return Math.abs(max - currentFloor) - Math.abs(min - currentFloor);
     }
 }

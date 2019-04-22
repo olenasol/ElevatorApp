@@ -21,5 +21,5 @@ public interface ElevatorSimulationPresenter {
 
     void notifyElevator(int elevatorId);
 
-    void moveToFloor(int elevatorId, int floorId);
+    void moveToFloor(int elevatorId, int floorId, int duration);
 }

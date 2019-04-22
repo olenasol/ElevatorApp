@@ -124,14 +124,14 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
     }
 
     @Override
-    public void moveToFloor(int elevatorNumber, int intendedFloor) {
+    public void moveToFloor(int elevatorNumber, int intendedFloor, int duration) {
         ObjectAnimator animation = ObjectAnimator.ofFloat(
                 (elevatorRecyclerView.getLayoutManager()).findViewByPosition(elevatorNumber)
                         .findViewById(R.id.elevator), "translationY",
                 presenter.moveToFloorYDelta(intendedFloor));
         Log.d("ELEVATOR_MOVEMENT", elevatorNumber+" "+intendedFloor+" "+ presenter.moveToFloorYDelta(intendedFloor));
         animation.setInterpolator(new LinearInterpolator());
-        animation.setDuration(2000);
+        animation.setDuration(duration);
         Message message = new Message();
         message.what = ELEVATOR_MOVE_ANIMATION;
         message.obj = animation;
