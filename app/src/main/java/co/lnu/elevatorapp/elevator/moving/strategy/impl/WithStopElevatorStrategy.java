@@ -3,10 +3,7 @@ package co.lnu.elevatorapp.elevator.moving.strategy.impl;
 import co.lnu.elevatorapp.dispatcher.Dispatcher;
 import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.elevator.ElevatorState;
-import co.lnu.elevatorapp.elevator.MovingDirection;
 import co.lnu.elevatorapp.elevator.moving.strategy.MovingStrategy;
-
-import java.util.Collections;
 
 public class WithStopElevatorStrategy implements MovingStrategy {
 
@@ -24,7 +21,7 @@ public class WithStopElevatorStrategy implements MovingStrategy {
                 elevator.getOrders().remove(0);
                 break;
             }
-            if(currentFloor < finalFloor) {
+            if (currentFloor < finalFloor) {
                 elevator.setCurrentFloor(++currentFloor);
             } else {
                 elevator.setCurrentFloor(--currentFloor);
@@ -58,9 +55,9 @@ public class WithStopElevatorStrategy implements MovingStrategy {
     }
 
     @Override
-    public boolean receiveOrder(int floorId, Elevator elevator) {
+    public boolean canReceiveOrder(int floorId, Elevator elevator) {
         int currentFloot = elevator.getCurrentFloor();
-        if(Math.abs(floorId - currentFloot) <= Math.abs(elevator.getOrders().get(0) - currentFloot)){
+        if (Math.abs(floorId - currentFloot) <= Math.abs(elevator.getOrders().get(0) - currentFloot)) {
             elevator.getOrders().add(0, floorId);
         } else {
 

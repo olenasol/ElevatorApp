@@ -30,14 +30,6 @@ public class Dispatcher {
         }
     }
 
-    private void startMoving(int elevatorId) {
-        Elevator elevator = building.getElevatorList().stream()
-                .filter(el -> el.getElevatorId() == elevatorId).findAny().orElse(null);
-        if (elevator != null) {
-            elevator.setElevatorState(ElevatorState.MOVE);
-        }
-    }
-
     public void moveToFloor(int elevatorId, int floor, int duration) {
         presenter.moveToFloor(elevatorId, floor, duration);
     }
@@ -57,6 +49,11 @@ public class Dispatcher {
         if (personListOnFloor.size() == 1) {
             addElevatorCall(person);
         }
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     private void addElevatorCall(Person person) {
@@ -65,9 +62,10 @@ public class Dispatcher {
         optimalElevator = getOptimalElevator(person.getFloorId(), elevators);
         if (optimalElevator == null) {
             waitingFloors.add(person.getFloorId());
-        } else if (optimalElevator.getElevatorState().equals(ElevatorState.FREE)) {
+        } else {
+            optimalElevator.getOrders().add(person.getFloorId());
             optimalElevator.setElevatorState(ElevatorState.MOVE);
-            startMoving(optimalElevator.getElevatorId());
+//            startMoving(optimalElevator.getElevatorId());
         }
     }
 
@@ -89,7 +87,7 @@ public class Dispatcher {
         Elevator optimalElevator = null;
         for (Elevator elevator : elevators) {
             int diff = Math.abs(elevator.getCurrentFloor() - floorId);
-            if (diff < minDifference && elevator.receiveOrder(floorId)) {
+            if (diff < minDifference && elevator.canReceiveOrder(floorId)) {
                 minDifference = diff;
                 optimalElevator = elevator;
             }
@@ -97,13 +95,16 @@ public class Dispatcher {
         return optimalElevator;
     }
 
-    public void transferFromFloorToElevator(int floorId, Elevator elevator) {
+    public synchronized void transferFromFloorToElevator(int floorId, Elevator elevator) {
         List<Person> peopleFrom = building.getFloorList().get(floorId).getPeopleToComeIn(elevator);
         if (!peopleFrom.isEmpty()) {
             addToList(peopleFrom, elevator.getPeople(), elevator);
             building.getFloorList().get(floorId).getPeople().removeAll(peopleFrom);
             presenter.notifyFloor(floorId);
             presenter.notifyElevator(elevator.getElevatorId());
+        }
+        if (building.getFloorList().get(floorId).getPeople().isEmpty()) {
+            waitingFloors.remove((Integer) floorId);
         }
     }
 
@@ -122,6 +123,7 @@ public class Dispatcher {
             }
         }
         elevator.getPeople().removeAll(peopleToDelete);
+        elevator.getOrders().remove(elevator.getCurrentFloor());
         presenter.notifyElevator(elevator.getElevatorId());
     }
 
@@ -130,12 +132,11 @@ public class Dispatcher {
             elevator.getOrders().add(waitingFloors.get(0));
             waitingFloors.remove(0);
             elevator.setElevatorState(ElevatorState.MOVE);
-//            try {
-//                Thread.sleep(2000);
-//            } catch (InterruptedException e) {
-//                e.printStackTrace();
-//            }
-//            elevator.move();
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
         }
     }
 }

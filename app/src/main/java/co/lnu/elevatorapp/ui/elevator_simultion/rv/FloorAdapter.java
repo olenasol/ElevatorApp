@@ -35,7 +35,12 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.FloorViewHol
 
     @Override
     public void onBindViewHolder(@NonNull FloorViewHolder floorViewHolder, int i) {
-        floorViewHolder.rvPeople.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false));
+        floorViewHolder.rvPeople.setLayoutManager(new LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false) {
+            @Override
+            public boolean supportsPredictiveItemAnimations() {
+                return false;
+            }
+        });
         floorViewHolder.rvPeople.setAdapter(new PeopleAdapter(listOfFloors.get(i).getPeople()));
     }
 
@@ -47,7 +52,8 @@ public class FloorAdapter extends RecyclerView.Adapter<FloorAdapter.FloorViewHol
     public Person removePerson(int floorNumber, int personNumber) {
         Person person = listOfFloors.get(floorNumber).getPeople().get(personNumber);
         listOfFloors.get(floorNumber).getPeople().remove(personNumber);
-        notifyItemChanged(floorNumber);
+//        notifyItemChanged(floorNumber);
+        notifyDataSetChanged();
         return person;
     }
 

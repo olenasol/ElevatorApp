@@ -5,7 +5,6 @@ import co.lnu.elevatorapp.elevator.Elevator;
 import co.lnu.elevatorapp.elevator.ElevatorState;
 import co.lnu.elevatorapp.elevator.moving.strategy.MovingStrategy;
 
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 
@@ -45,7 +44,6 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
         List<Integer> orders = elevator.getOrders();
         if (!orders.isEmpty() && orders.get(0).equals(floorId)) {
             elevator.setElevatorState(ElevatorState.STOP);
-            orders.remove(0);
             dispatcher.transferFromFloorToElevator(floorId, elevator);
             dispatcher.transferFromElevator(elevator);
             elevator.setElevatorState(elevatorState);
@@ -58,13 +56,12 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
     }
 
     @Override
-    public boolean receiveOrder(int floorId, Elevator elevator) {
-        boolean received = false;
+    public boolean canReceiveOrder(int floorId, Elevator elevator) {
+        boolean canReceive = false;
         if (elevator.getElevatorState().equals(ElevatorState.FREE)) {
-            elevator.getOrders().add(floorId);
-            received = true;
+            canReceive = true;
         }
-        return received;
+        return canReceive;
     }
 
     @Override
@@ -79,6 +76,6 @@ public class WithoutStopElevatorStrategy implements MovingStrategy {
     private int getOrder(int currentFloor, List<Integer> orders) {
         int max = orders.stream().max(Comparator.comparingInt(o -> o)).get();
         int min = orders.stream().min(Comparator.comparingInt(o -> o)).get();
-        return  Math.abs(max - currentFloor) - Math.abs(min - currentFloor);
+        return Math.abs(max - currentFloor) - Math.abs(min - currentFloor);
     }
 }
