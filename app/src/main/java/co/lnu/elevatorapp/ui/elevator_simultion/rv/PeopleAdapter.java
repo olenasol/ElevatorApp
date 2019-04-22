@@ -30,6 +30,7 @@ public class PeopleAdapter extends RecyclerView.Adapter<PeopleAdapter.PeopleView
 
     @Override
     public void onBindViewHolder(@NonNull PeopleViewHolder peopleViewHolder, int i) {
+        if(i<listOfPeople.size())
         if (!listOfPeople.isEmpty() && listOfPeople.get(i) != null) {
             peopleViewHolder.txtPersonIntendedFloor.setText(String.valueOf(listOfPeople.get(i).getIntendedFloor()));
             switch (listOfPeople.get(i).getColor()) {

@@ -3,6 +3,7 @@ package co.lnu.elevatorapp.ui.elevator_simultion;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ObjectAnimator;
+import android.content.pm.ActivityInfo;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -83,7 +84,14 @@ public class ElevatorSimulationFragment extends Fragment implements ElevatorSimu
             presenter.onViewCreated(getArguments().getInt(ARGS_FLOORNUMBER, 5),
                     getArguments().getInt(ARGS_ELEVATORNUMBER, 1));
     }
-
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(getArguments().getInt(ARGS_ELEVATORNUMBER, 1)>3)
+        if(getActivity() != null){
+            getActivity().setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+        }
+    }
     @Override
     public void generateBuildingUI(List<Floor> floors, List<Elevator> elevators) {
         initFloorRV(floors);
